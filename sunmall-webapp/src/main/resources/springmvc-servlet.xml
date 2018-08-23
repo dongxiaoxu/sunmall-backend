@@ -17,6 +17,8 @@
 		use-default-filters="false">
 	<context:include-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
+	<context:include-filter expression="org.springframework.web.bind.annotation.RestController"
+							type="annotation" />
 	</context:component-scan>
 
 	<bean id="viewResolver"
@@ -50,7 +52,6 @@
 
 
 	<mvc:interceptors>
-		<!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->
-		<bean class="site.dongxiaoxu.sunmall.framework.interceptor.AjaxCrossOriginInterceptor"/>
+		<bean class="site.dongxiaoxu.sunmall.framework.interceptor.SessionInterceptor"></bean>
 	</mvc:interceptors>
 </beans>

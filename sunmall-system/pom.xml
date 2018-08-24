@@ -21,6 +21,7 @@
             <artifactId>sunmall-framework</artifactId>
             <version>1.0</version>
         </dependency>
+
     </dependencies>
     <parent>
         <artifactId>sunmall</artifactId>

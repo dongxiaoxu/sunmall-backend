@@ -1,6 +1,7 @@
 package site.dongxiaoxu.sunmall.framework.session;
 
-import javax.servlet.http.HttpSession;
+import site.dongxiaoxu.sunmall.framework.exception.UnmodifiableSetException;
+
 import java.util.Map;
 
 /**
@@ -8,30 +9,43 @@ import java.util.Map;
  */
 public class UserSession {
 
-    private String userName;
-
-    private String userId;
-
-    public UserSession(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("session not allow null!");
+    public UserSession(String sessionId, String userName) {
+        if (sessionId == null) {
+            throw new IllegalArgumentException("sessionId not allow null!");
+        } else if (userName == null) {
+            throw new IllegalArgumentException("userName not allow null!");
         }
-        this.sessionId = session.getId();
-        this.session = session;
+        this.sessionId = sessionId;
+        this.userName = userName;
     }
 
-    private String sessionId;
+    private final String sessionId;
 
-    private HttpSession session;
+    private final String userName;
 
-    public HttpSession getSession() {
-        return this.session;
-    }
+    private Map<String, Object> userParams;
 
     public String getSessionId() {
-        return this.sessionId;
+        return sessionId;
     }
 
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public Map<String, Object> getUserParams() {
+        return userParams;
+    }
+
+
+    public void setUserParams(Map<String, Object> userParams) {
+        if (userParams == null) {
+            throw new IllegalArgumentException("userParam is null!");
+        } else if (this.userParams != null){
+            throw new UnmodifiableSetException("userParams alreay set!");
+        } else {
+            this.userParams = userParams;
+        }
+    }
 }

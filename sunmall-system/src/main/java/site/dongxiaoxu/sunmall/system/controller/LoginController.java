@@ -1,5 +1,7 @@
 package site.dongxiaoxu.sunmall.system.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.dongxiaoxu.sunmall.framework.session.SessionManage;
 import site.dongxiaoxu.sunmall.framework.session.UserSession;
+import site.dongxiaoxu.sunmall.framework.utils.RedisUtil;
 import site.dongxiaoxu.sunmall.system.model.User;
 import site.dongxiaoxu.sunmall.system.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.MessageDigest;
 import java.util.Map;
 
 /**
@@ -20,6 +23,10 @@ import java.util.Map;
  */
 @RestController
 public class LoginController {
+
+    @Autowired
+    @Qualifier("redisUtil")
+    private RedisUtil redisUtil;
 
     @Autowired
     @Qualifier("userService")
@@ -35,12 +42,17 @@ public class LoginController {
         } else {
             User user;
             user = this.userService.getUser(userName);
-            if (user == null || !password.equals(user.getPassword())) {
+            String md5Password;
+            md5Password = DigestUtils.md5Hex(password);
+            if (user == null || !md5Password.equals(user.getPassword())) {
                 result = "failure";
             } else {
                 result = "success";
                 HttpSession session = request.getSession(true);
-                SessionManage.getSessionManage().createSession(new UserSession(session));
+                UserSession userSession;
+                userSession = new UserSession(session.getId(), user.getUserName());
+
+                SessionManage.getSessionManage().createSession(userSession);
                 rltMap.put("userInfo", user);
             }
         }
@@ -48,8 +60,11 @@ public class LoginController {
         return rltMap;
     }
 
-    @RequestMapping("logout.mvc")
-    public void logout(HttpServletRequest request, String userName) {
-        SessionManage.getSessionManage().deleteSession(new UserSession(request.getSession(false)));
+    @RequestMapping("/logout.mvc")
+    public void logout(String userName) {
+        redisUtil.set("userName", userName);
+        Object username = redisUtil.get("userName");
+
+        SessionManage.getSessionManage().deleteSession(userName);
     }
 }

@@ -10,6 +10,12 @@ public class SessionManage {
 
     private volatile static SessionManage sessionManage;
 
+    private Map<String, UserSession> sessions = new ConcurrentHashMap<>(1024);
+
+
+    private Map<String, String> userNameSessionMapper = new ConcurrentHashMap<>(1024);
+
+
     private SessionManage() {}
 
     public static SessionManage getSessionManage() {
@@ -21,18 +27,33 @@ public class SessionManage {
             }
         }
         return sessionManage;
-
     }
-
-    private Map<String, UserSession> sessions = new ConcurrentHashMap<String, UserSession>(1024);
-
 
     public void createSession(UserSession session) {
-        sessions.put(session.getSessionId(), session);
+        String oldSessionId;
+        oldSessionId = this.userNameSessionMapper.remove(session.getUserName());
+        if (oldSessionId != null) {
+            this.sessions.remove(oldSessionId);
+        }
+        this.sessions.put(session.getSessionId(), session);
+        this.userNameSessionMapper.put(session.getUserName(), session.getSessionId());
     }
 
-    public boolean deleteSession(UserSession session) {
-        this.sessions.remove(session.getSessionId());
-        return true;
+    public void deleteSession(String userName) {
+        String sessionId;
+        sessionId = this.userNameSessionMapper.remove(userName);
+        if (sessionId != null) {
+            this.sessions.remove(sessionId);
+        }
+    }
+
+    public UserSession getUserSessionByUserName(String userName) {
+        String sessionId;
+        sessionId = this.userNameSessionMapper.get(userName);
+        return sessionId == null ? null : this.sessions.get(sessionId);
+    }
+
+    public UserSession getUserSessionBySessionId(String sessionId) {
+        return this.sessions.get(sessionId);
     }
 }

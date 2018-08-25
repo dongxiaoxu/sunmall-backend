@@ -62,6 +62,7 @@ public class LoginController {
 
     @RequestMapping("/logout.mvc")
     public void logout(String userName) {
+        //测试redis
         redisUtil.set("userName", userName);
         Object username = redisUtil.get("userName");
 

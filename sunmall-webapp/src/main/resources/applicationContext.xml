@@ -51,14 +51,19 @@
 		<!--端口号 -->
 		<property name="port" value="${redis.port}"></property>
 		<!--如果Redis设置有密码 -->
-		<!-- <property name="password" value="${redis.password}" /> -->
+		 <property name="password" value="${redis.password}" />
 		<!--客户端超时时间单位是毫秒 -->
 		<property name="timeout" value="${redis.timeout}"></property>
 	</bean>
 
+	<bean id="serializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
 	<!-- redis操作模板，这里采用尽量面向对象的模板 -->
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
 		<property name="connectionFactory" ref="jedisConnectionFactory" />
+		<property name="keySerializer" ref="serializer"/>
+		<property name="valueSerializer" ref="serializer"/>
+		<property name="hashKeySerializer" ref="serializer"/>
+		<property name="hashValueSerializer" ref="serializer"/>
 		<!-- 指定redis中key-value的序列化方式（此处省略） -->
 	</bean>
 

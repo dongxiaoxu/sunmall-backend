@@ -271,19 +271,24 @@
         </dependency>
 
         <!-- redis start -->
-        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>2.7.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
             <version>1.6.0.RELEASE</version>
         </dependency>
         <!-- redis end -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

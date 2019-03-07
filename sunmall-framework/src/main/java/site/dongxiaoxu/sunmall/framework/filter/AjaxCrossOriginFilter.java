@@ -19,9 +19,10 @@ public class AjaxCrossOriginFilter implements Filter{
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         //ajax跨域访问统一添加响应头Access-Control-Allow-Origin和Access-Control-Allow-Method
 //        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Method", "POST,GET");
+        response.addHeader("Access-Control-Allow-Method", "POST,GET,PUT,DELETE");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
